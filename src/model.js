@@ -53,6 +53,29 @@ export class Game {
 
   addCardFromDeck() {
     if (this.table.length + this.hand.length < 8 && this.deck.length !== 0) {
+      const anions = this.hand.map((x) => x.oxidation).filter((x) => x < 0);
+      const cations = this.hand.map((x) => x.oxidation).filter((x) => x > 0);
+
+      if (anions.length === 0 || cations.length === 0) {
+        let needed;
+
+        if (anions.length === 0) {
+          needed = cations.map((x) => -x);
+        } else if (cations.length === 0) {
+          needed = anions.map((x) => -x);
+        }
+
+        for (let i = 0; i < this.deck.length; ++i) {
+          if (needed.includes(this.deck[i].oxidation)) {
+            const tmp = this.deck[0];
+            this.deck[0] = this.deck[i];
+            this.deck[i] = tmp;
+            console.log("swapped", i);
+            break;
+          }
+        }
+      }
+
       this.hand.push(this.deck.shift());
     }
   }
